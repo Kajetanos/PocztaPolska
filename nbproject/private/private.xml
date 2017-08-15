@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-private xmlns="http://www.netbeans.org/ns/project-private/1">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <group>
+            <file>file:/var/www/html/21_07_poczta_polska/app/Ems.php</file>
+            <file>file:/var/www/html/21_07_poczta_polska/node/server.js</file>
+            <file>file:/var/www/html/21_07_poczta_polska/app/Http/Controllers/Post_International_Controller.php</file>
+            <file>file:/var/www/html/21_07_poczta_polska/database/migrations/2017_07_24_133451_create_ems_table.php</file>
+            <file>file:/var/www/html/21_07_poczta_polska/database/migrations/2017_07_24_140237_create_strfa__as_table.php</file>
+            <file>file:/var/www/html/21_07_poczta_polska/public/poczta/output.json</file>
+            <file>file:/var/www/html/21_07_poczta_polska/app/Raport.php</file>
+            <file>file:/var/www/html/21_07_poczta_polska/app/Strfa_A.php</file>
+            <file>file:/var/www/html/21_07_poczta_polska/routes/web.php</file>
+            <file>file:/var/www/html/21_07_poczta_polska/app/Http/Controllers/PaczkaKrajowaController.php</file>
+            <file>file:/var/www/html/21_07_poczta_polska/app/PrzesylkiZagraniczne.php</file>
+            <file>file:/var/www/html/21_07_poczta_polska/node/scrapper.js</file>
+            <file>file:/var/www/html/21_07_poczta_polska/app/post_information.php</file>
+        </group>
+    </open-files>
+</project-private>
