@@ -15,8 +15,9 @@ class CreateStrefyPrzesylkiPocztoweTable extends Migration
     {
         Schema::create('strefy_przesylek_pocztowych_zagranicznych', function (Blueprint $table) {
            $table->increments('id'); 
-           $table->string('strefa')->nullable(); 
            $table->string('nazwa_kraju'); 
+           $table->string('strefaI')->nullable(); 
+           $table->string('strefaII')->nullable(); 
         });
     }
 

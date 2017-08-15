@@ -19,8 +19,9 @@ class CreatePrzesylkaPoleconaZagranicznasTable extends Migration
             $table->string('masa');
             $table->string('strefa')->nullable();
             $table->string('kraj');
-            $table->float('cena')->nullable();
+            $table->double('cena')->nullable();
             $table->string('usluga')->nullable();
+            $table->string('date');
             $table->timestamps();
         });
     }

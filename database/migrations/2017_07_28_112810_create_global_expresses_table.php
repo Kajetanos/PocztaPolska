@@ -18,7 +18,8 @@ class CreateGlobalExpressesTable extends Migration
             $table->string('kraj');
             $table->string('unique_id');
             $table->string('masa');
-            $table->string('cena')->nullable();
+            $table->string('date');
+            $table->double('cena')->nullable();
             $table->string('strefa')->nullable();
             $table->timestamps();
         });

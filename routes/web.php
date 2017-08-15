@@ -17,3 +17,4 @@ Route::get('/', function () {
 Route::get('/get','PaczkaKrajowaController@get_parrams');
 Route::get('/save','PaczkaKrajowaController@save_all');
 Route::get('/testy' , "PaczkaKrajowaController@emsTesty");
+Route::get('/xls' , "PaczkaKrajowaController@saveMainRaportAndGetOtherXls");

@@ -23,7 +23,7 @@ class GlobalExpress extends Model
                'kraj'           => $row->kraj ,
                'unique_id'      => $row->unique_id, 
                'masa'           => round($row->masa),
-              'date'            => $row->date,
+               'date'            => $row->date,
             ]);
         }
     }

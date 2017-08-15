@@ -217,25 +217,38 @@ class PrzesylkiZagraniczne extends Model
     public static function getStrefEms(){
         
         $path = storage_path('/XLS/wykaz_stref_EMS_old.xlsx');
-       $strefy_next = Raport::read_xls("$path");  
+       $strefy_next = Raport::readXls("$path");  
         foreach ($strefy_next as $row_next) {
-         
             if(!empty($row_next[1])){
             DB::table('wykaz_stref_ems')->insert([
                 'nazwa_kraju' =>$row_next[1],
                 'strefa'      =>$row_next[2]
              ]);
-            
-        }
+            }
         }
     }
+     
+    public static function getOtherStrefEms(){
+        $path = 'XLS/wykaz_stref_EMS.xls';
+       $strefy_next = Raport::readXls("$path");  
+        foreach ($strefy_next as $row_next) {
+            if(!empty($row_next[1])){
+            DB::table('wykaz_stref_ems')->insert([
+                'nazwa_kraju' =>$row_next[1],
+                'strefa'      =>$row_next[2]
+             ]);
+            }
+        }
+    }
+    
+            
     /**
      * Funkcja jedt odpowiedzialna za pobranie Stref (na które są podzielone państwa) i zapisanie do tabeli wykaz_stref_ems
      */
     public static function getStrefPaczkaPocztowa(){
         
          $path = storage_path('/XLS/wykaz_stref_paczka_pocztowa.xlsx');
-       $strefy = Raport::read_xls("$path"); 
+       $strefy = Raport::readXls("$path"); 
 
        foreach ($strefy as $row) {
             

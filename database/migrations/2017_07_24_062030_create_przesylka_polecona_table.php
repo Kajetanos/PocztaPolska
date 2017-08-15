@@ -17,9 +17,11 @@ class CreatePrzesylkaPoleconaTable extends Migration
             $table->increments('id');
             $table->string('gabaryt');
             $table->float ('masa');
+            $table->double ('cena')->nullable();
             $table->float ('ilosc');
             $table->string('usluga')->nullable();
             $table->string('stawka_vat')->nullable();
+            $table->string('date');
             
             $table->timestamps();
         });

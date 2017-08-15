@@ -71,29 +71,41 @@ class PaczkaKrajowaController extends Controller {
     
 
     /**
-     * Metoda wywołuje wszystkie metody które odczytują i zapisują xls'y.
+     * Metoda wywołuje wszystkie metody które zapisują xls'y.
      */
     public function save_all() {
-//        PrzesylkiZagraniczne::get_stref_ems();
-//        PrzesylkiZagraniczne::get_stref_paczka_pocztowa();
-
         
+ 
         PrzesylkaPoleconaZagraniczna::getAndSavePrzesylkiZagraniczne();
         Ems::saveToEms();
         PrzesylkaPolecona::addPolecona(); 
         GlobalExpress::saveToGlobalExpreses();
-        Ems::setPriceWithWeightZoneA();
-        PrzesylkaPoleconaZagraniczna::splitIntoZone();
-        PrzesylkaPoleconaZagraniczna::splitIntoZonesInternationalWithoutService();
-        PrzesylkaPoleconaZagraniczna::splitIntoZonesInternationalWithService();
-        GlobalExpress::getEuropeZone();
-        GlobalExpress::getOtherZone();
-        GlobalExpress::getEuropeZone();
+        
+    }
+    public static function setPrice() {
+//        PrzesylkaPoleconaZagraniczna::splitIntoZone();
+//        PrzesylkaPoleconaZagraniczna::splitIntoZonesInternationalWithoutService();
+//        PrzesylkaPoleconaZagraniczna::splitIntoZonesInternationalWithService();
+//        GlobalExpress::getEuropeZone();
+//        GlobalExpress::getOtherZone();
+//        GlobalExpress::getEuropeZone();
+//        Ems::setPriceWithWeightZoneA();
 //        PrzesylkaPoleconaZagraniczna::get_prices_from_json();
 //        GlobalExpress::get_prices_from_json();
 //        GlobalExpress::set_global_price_from_other_country();
 //        GlobalExpress::set_global_price_from_europe();
 //        PrzesylkaPolecona::get_prices_from_json();
+    }
+    
+    /**
+     * Ta funkcja jest odpowiedzialna za odczytanie xls'a 'Raport' w którym jest spis usług wykonanych dla nas przez Pocztę Polską 
+     * Następnie odczytuje nam xlsa ze strefami krajowymi Ems i Paczek zagranicznych Poczty Polskiej 
+     */
+    public static function saveMainRaportAndGetOtherXls() { 
+        Raport::saveXls();
+        PrzesylkiZagraniczne::getStrefEms();
+        PrzesylkiZagraniczne::getOtherStrefEms();
+        PrzesylkiZagraniczne::getStrefPaczkaPocztowa();
     }
 
     public static function get_parrams() {
@@ -122,7 +134,7 @@ class PaczkaKrajowaController extends Controller {
         return view('main', compact('raports', 'title', 'company', 'krajowe'));
     }
 
-    public function ems_controller() {
+    public function emsController() {
 
         $title = 'Ems';
         $ems = Ems::paginate(10);
@@ -210,7 +222,7 @@ class PaczkaKrajowaController extends Controller {
         $international = PrzesylkaPoleconaZagraniczna::addAllPricesZagraniczne();
         $global_europe = GlobalExpress::setGlobalPriceFromEurope();
         $global_other = GlobalExpress::setGlobalPriceFromOtherCountry();
-//        $suma = $ems+ $polisch_price + $international + $global_europe + $global_other;
+    //        $suma = $ems+ $polisch_price + $international + $global_europe + $global_other;
         $global = $global_europe + $global_other;
         $suma = $ems_price + $polisch_price + $international + $global;
         
@@ -219,9 +231,11 @@ class PaczkaKrajowaController extends Controller {
     }
   
     public function emsTesty(){
-//        $objToTest = new Ems();
+        $objToTest = new Ems();
 //        $objToTest->setIdFromStrefa();
-        Ems::setIdFromStrefa();
+        $objToTest->setWeight();
+        $objToTest->setPriceFromId();
+//        Ems::setIdFromStrefa();
         
     }
        

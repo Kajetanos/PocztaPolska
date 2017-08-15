@@ -21,6 +21,7 @@ class CreateEmsTable extends Migration
             $table->string('ubezpieczenie')->nullable();
             $table->float('cena')->nullable();  
             $table->string('kraj');
+            $table->string('date');
             $table->timestamps();
         });
     }

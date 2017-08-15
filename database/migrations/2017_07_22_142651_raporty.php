@@ -13,17 +13,8 @@ class Raporty extends Migration
      */
     public function up()
     {
-         Schema::create('raporty', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('unique_id');
-            $table->string('rodzaj_przesylki');
-            $table->float('masa[g]');
-            $table->integer('ilosc');
-            $table->string('gabaryt')->nullable();
-            $table->string('usluga')->nullable();
-            $table->string('stawkaVat');
-            $table->timestamps();
-        });
+        
+        
     }
 
     /**

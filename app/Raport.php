@@ -44,7 +44,7 @@ class Raport extends Model
      * @param type $object_to_save
      */
     public static function saveXls(){
-     $path = storage_path('XLS/Raport_07_17.ods') ;
+     $path = storage_path('XLS/Raport_test.ods') ;
        $object_to_save= Raport::readXls($path);
         foreach($object_to_save as $rap){
 //            echo $rap;

@@ -23,6 +23,7 @@ class CreateRaportsTable extends Migration
             $table->string('usluga')->nullable();
             $table->string('stawkaVat');
             $table->string('kraj');
+            $table->string('date');
             $table->string('ubezpieczenia')->nullable();
             
             $table->timestamps();

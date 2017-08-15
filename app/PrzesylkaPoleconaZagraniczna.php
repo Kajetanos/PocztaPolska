@@ -25,7 +25,7 @@ class PrzesylkaPoleconaZagraniczna extends Model {
     /**
      * Funkcja zapisuje wszystkie przesylki zagraniczne
      */
-    public static function getAndSavePrzesylkaZagraniczne() {
+    public static function getAndSavePrzesylkiZagraniczne() {
 
         $przesylka_pocztowa_pozstale_kraje = PrzesylkiZagraniczne::getPrzesylkaPocztowaPozstaleKraje();
         foreach ($przesylka_pocztowa_pozstale_kraje as $rest_country) {

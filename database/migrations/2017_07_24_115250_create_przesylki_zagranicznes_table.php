@@ -23,6 +23,7 @@ class CreatePrzesylkiZagranicznesTable extends Migration
             $table->string('usluga');
             $table->string('stawkaVat');
             $table->string('kraj');
+            $table->string('date');
             $table->timestamps();
         });
     }
