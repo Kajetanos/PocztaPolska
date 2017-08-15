@@ -16,6 +16,10 @@ class Ems extends Model {
         'date',
     ];
     protected $table = 'ems';
+    /**
+     * Tabela pomocnicza zaciągnieta ze strony wskazująca id dla poszczególnych państw.
+     * @var type 
+     */
     public $strefySmall = [
         '563' => [
             'Albania',
@@ -229,309 +233,12 @@ class Ems extends Model {
         return $array_json;
     }
 
-    public function setId($kraj) {
-
-        foreach ($this->strefy as $strefa) {
-            foreach ($strefa['kraje'] as $k) {
-                if ($k === $kraj) {
-                    return $strefa['id'];
-                }
-            }
-        }
-    }
-
-    /**
-     * Metoda dodajé do wszystkich 
-     */
-    public static function setStref() {
-        $strefy = DB::table('wykaz_stref_ems')->get();
-        $emsStrefy = Ems::where("kraj", ">", "0")->select('kraj', 'id')->get();
-
-        foreach ($strefy as $strefa) {
-            foreach ($emsStrefy as $dbStrefa) {
-                if ($strefa->nazwa_kraju == $dbStrefa->kraj) {
-                    Ems::where("id", "=", "$dbStrefa->id")->update(["strefa" => $strefa->strefa]);
-                }
-            }
-        }
-    }
-
-    public static function setPriceWithWeightZoneA() {
-        Ems::setStref();
-        $waga = Ems::where('strefa', '=', 'A')->select('masa')->get();
-        $suma = 0;
-        $array_json = Ems::getPricesFromJson();
-        $x = '563,';
-
-        foreach ($waga as $masa) {
-
-
-            if ($masa->masa <= 5) {
-
-                $cenaOne = ($masa->masa <= 0.5) ? $masa->cena = $array_json[$x . '568'] : 0;
-                $cenaTwo = ($masa->masa <= 1 && $masa->masa > 0.5) ? $masa->cena = $array_json[$x . '84'] : 0;
-                $cenaThree = ($masa->masa <= 2 && $masa->masa > 1) ? $masa->cena = $array_json[$x . '85'] : 0;
-                $cenaaFour = ($masa->masa <= 3 && $masa->masa > 2) ? $masa->cena = $array_json[$x . '86'] : 0;
-                $cenaFive = ($masa->masa <= 4 && $masa->masa > 3) ? $masa->cena = $array_json[$x . '87'] : 0;
-                $cenaSix = ($masa->masa <= 5 && $masa->masa > 4) ? $masa->cena = $array_json[$x . '88'] : 0;
-                Ems::where("id", "=", "$masa->id")->update(["cena" => $masa->cena]) . "<br>";
-                $suma += $cenaOne;
-                $suma += $cenaTwo;
-                $suma += $cenaThree;
-                $suma += $cenaaFour;
-                $suma += $cenaFive;
-                $suma += $cenaSix;
-            }
-
-            if ($masa->masa > 5 && $masa->masa < 10) {
-                $cenaOne = ($masa->masa >= 6 && $masa->masa > 5) ? $masa->cena = $array_json[$x . '89'] : 0;
-                $cenaTwo = ($masa->masa >= 7 && $masa->masa > 6) ? $masa->cena = $array_json[$x . '90'] : 0;
-                $cenaThree = ($masa->masa >= 8 && $masa->masa > 7) ? $masa->cena = $array_json[$x . '91'] : 0;
-                $cenaaFour = ($masa->masa >= 9 && $masa->masa > 8) ? $masa->cena = $array_json[$x . '92'] : 0;
-                $cenaFive = ($masa->masa >= 10 && $masa->masa > 9) ? $masa->cena = $array_json[$x . '93'] : 0;
-                Ems::where("id", "=", "$masa->id")->update(["cena" => $masa->cena]) . "<br>";
-                $suma += $cenaOne;
-                $suma += $cenaTwo;
-                $suma += $cenaThree;
-                $suma += $cenaaFour;
-                $suma += $cenaFive;
-            } elseif ($masa->masa > 10 && $masa->masa < 15) {
-                $cenaOne = ($masa->masa >= 11 && $masa->masa > 10) ? $masa->cena = $array_json[$x . '94'] : 0;
-                $cenaTwo = ($masa->masa >= 12 && $masa->masa > 11) ? $masa->cena = $array_json[$x . '95'] : 0;
-                $cenaThree = ($masa->masa >= 13 && $masa->masa > 12) ? $masa->cena = $array_json[$x . '96'] : 0;
-                $cenaaFour = ($masa->masa >= 14 && $masa->masa > 13) ? $masa->cena = $array_json[$x . '97'] : 0;
-                $cenaFive = ($masa->masa >= 15 && $masa->masa > 14) ? $masa->cena = $array_json[$x . '98'] : 0;
-                Ems::where("id", "=", "$masa->id")->update(["cena" => $masa->cena]) . "<br>";
-                $suma += $cenaOne;
-                $suma += $cenaTwo;
-                $suma += $cenaThree;
-                $suma += $cenaaFour;
-                $suma += $cenaFive;
-            } else {
-                $cenaOne = ($masa->masa >= 16 && $masa->masa > 15) ? $masa->cena = $array_json[$x . '99'] : 0;
-                $cenaTwo = ($masa->masa >= 17 && $masa->masa > 16) ? $masa->cena = $array_json[$x . '100'] : 0;
-                $cenaThree = ($masa->masa >= 18 && $masa->masa > 17) ? $masa->cena = $array_json[$x . '101'] : 0;
-                $cenaaFour = ($masa->masa >= 19 && $masa->masa > 18) ? $masa->cena = $array_json[$x . '102'] : 0;
-                $cenaFive = ($masa->masa >= 20 && $masa->masa > 19) ? $masa->cena = $array_json[$x . '103'] : 0;
-                Ems::where("id", "=", "$masa->id")->update(["cena" => $masa->cena]) . "<br>";
-                $suma += $cenaOne;
-                $suma += $cenaTwo;
-                $suma += $cenaThree;
-                $suma += $cenaaFour;
-                $suma += $cenaFive;
-            }
-        }
-        return $suma;
-    }
-
-    public static function setPriceWithWeightZoneB() {
-        $suma = 0;
-//        $waga = Ems::where('strefa', '=', 'B')->select('masa')->get();
-        $array_of_value_ems = ['id', 'unique_id', 'strefa', 'masa', 'ubezpieczenie', 'cena', 'kraj'];
-        $waga = Ems::where('strefa', '=', 'B')->select($array_of_value_ems)->get();
-
-        $array_json = Ems::getPricesFromJson();
-        $x = '564,';
-        foreach ($waga as $key => $masa) {
-            if ($masa->masa <= 5) {
-                $cenaOne = ($masa->masa <= 0.5) ? $masa->cena = $masa->cena = $array_json[$x . '568'] : 0;
-                $cenaTwo = ($masa->masa <= 1 && $masa->masa > 0.5) ? $masa->cena = $array_json[$x . '84'] : 0;
-                $cenaThree = ($masa->masa <= 2 && $masa->masa > 1) ? $masa->cena = $array_json[$x . '85'] : 0;
-                $cenaaFour = ($masa->masa <= 3 && $masa->masa > 2) ? $masa->cena = $array_json[$x . '86'] : 0;
-                $cenaFive = ($masa->masa <= 4 && $masa->masa > 3) ? $masa->cena = $masa->cena = $array_json[$x . '87'] : 0;
-
-                Ems::where("masa", "=", "$masa->id")->update(["cena" => $masa->cena]);
-
-                $cenaSix = ($masa->masa <= 5 && $masa->masa > 4) ? $masa->cena = $array_json[$x . '88'] : 0;
-
-                $suma += $cenaOne;
-                $suma += $cenaTwo;
-                $suma += $cenaThree;
-                $suma += $cenaaFour;
-                $suma += $cenaFive;
-                $suma += $cenaSix;
-            }
-
-            if ($masa->masa > 5 && $masa->masa < 10) {
-                $cenaOne = ($masa->masa <= 6 && $masa->masa > 5) ? $masa->cena = $array_json[$x . '89'] : 0;
-                $cenaTwo = ($masa->masa <= 7 && $masa->masa > 6) ? $masa->cena = $array_json[$x . '90'] : 0;
-                $cenaThree = ($masa->masa <= 8 && $masa->masa > 7) ? $masa->cena = $array_json[$x . '91'] : 0;
-                $cenaaFour = ($masa->masa <= 9 && $masa->masa > 8) ? $masa->cena = $array_json[$x . '92'] : 0;
-                $cenaFive = ($masa->masa <= 10 && $masa->masa > 9) ? $masa->cena = $array_json[$x . '93'] : 0;
-
-                Ems::where("id", "=", "$masa->id")->update(["cena" => $masa->cena]);
-                $suma += $cenaOne;
-                $suma += $cenaTwo;
-                $suma += $cenaThree;
-                $suma += $cenaaFour;
-                $suma += $cenaFive;
-            } elseif ($masa->masa > 10 && $masa->masa <= 15) {
-                $cenaOne = ($masa->masa <= 11 && $masa->masa > 10) ? $masa->cena = $masa->cena = $array_json[$x . '94'] : 0;
-                $cenaTwo = ($masa->masa <= 12 && $masa->masa > 11) ? $masa->cena = $masa->cena = $array_json[$x . '95'] : 0;
-                $cenaThree = ($masa->masa <= 13 && $masa->masa > 12) ? $masa->cena = $masa->cena = $array_json[$x . '96'] : 0;
-                $cenaaFour = ($masa->masa <= 14 && $masa->masa > 13) ? $masa->cena = $masa->cena = $array_json[$x . '97'] : 0;
-                $cenaFive = ($masa->masa <= 15 && $masa->masa > 14) ? $masa->cena = $masa->cena = $array_json[$x . '98'] : 0;
-
-                Ems::where("id", "=", "$masa->id")->update(["cena" => $masa->cena]);
-
-                $suma += $cenaOne;
-                $suma += $cenaTwo;
-                $suma += $cenaThree;
-                $suma += $cenaaFour;
-                $suma += $cenaFive;
-            } else {
-                $cenaOne = ($masa->masa <= 16 && $masa->masa > 15) ? $masa->cena = $masa->cena = $array_json[$x . '99'] : 0;
-                $cenaTwo = ($masa->masa <= 17 && $masa->masa > 16) ? $masa->cena = $masa->cena = $array_json[$x . '100'] : 0;
-                $cenaThree = ($masa->masa <= 18 && $masa->masa > 17) ? $masa->cena = $masa->cena = $array_json[$x . '101'] : 0;
-                $cenaaFour = ($masa->masa <= 19 && $masa->masa > 18) ? $masa->cena = $masa->cena = $array_json[$x . '102'] : 0;
-                $cenaFive = ($masa->masa <= 20 && $masa->masa > 19) ? $masa->cena = $masa->cena = $array_json[$x . '103'] : 0;
-                Ems::where("id", "=", "$masa->id")->update(["cena" => $masa->cena]);
-                $suma += $cenaOne;
-                $suma += $cenaTwo;
-                $suma += $cenaThree;
-                $suma += $cenaaFour;
-                $suma += $cenaFive;
-            }
-        }
-        return $suma;
-    }
-
-    public static function setPriceWithWeightZoneC() {
-
-        $suma = 0;
-        $waga = Ems::where('strefa', '=', 'C')->select('masa', 'id')->get();
-        $array_json = Ems::getPricesFromJson();
-        $x = '566,';
-
-        foreach ($waga as $masa) {
-            if ($masa->masa <= 5) {
-
-                $cenaOne = ($masa->masa <= 0.5) ? $masa->cena = $array_json[$x . '568'] : 0;
-                $cenaTwo = ($masa->masa <= 1 && $masa->masa >= 0.5) ? $masa->cena = $array_json[$x . '84'] : 0;
-                $cenaThree = ($masa->masa <= 2 && $masa->masa >= 1) ? $masa->cena = $array_json[$x . '85'] : 0;
-                $cenaaFour = ($masa->masa <= 3 && $masa->masa >= 2) ? $masa->cena = $array_json[$x . '86'] : 0;
-                $cenaFive = ($masa->masa <= 4 && $masa->masa >= 3) ? $masa->cena = $array_json[$x . '87'] : 0;
-                $cenaSix = ($masa->masa <= 5 && $masa->masa >= 4) ? $masa->cena = $array_json[$x . '88'] : 0;
-                Ems::where("id", "=", "$masa->id")->update(["cena" => $masa->cena]);
-                $suma += $cenaOne;
-                $suma += $cenaTwo;
-                $suma += $cenaThree;
-                $suma += $cenaaFour;
-                $suma += $cenaFive;
-                $suma += $cenaSix;
-            }
-
-            if ($masa->masa > 5 && $masa->masa < 10) {
-                $cenaOne = ($masa->masa <= 6 && $masa->masa > 5) ? $masa->cena = $array_json[$x . '89'] : 0;
-                $cenaTwo = ($masa->masa <= 7 && $masa->masa > 6) ? $masa->cena = $array_json[$x . '90'] : 0;
-                $cenaThree = ($masa->masa <= 8 && $masa->masa > 7) ? $masa->cena = $array_json[$x . '91'] : 0;
-                $cenaaFour = ($masa->masa <= 9 && $masa->masa > 8) ? $masa->cena = $array_json[$x . '92'] : 0;
-                $cenaFive = ($masa->masa <= 10 && $masa->masa > 9) ? $masa->cena = $array_json[$x . '93'] : 0;
-                Ems::where("id", "=", "$masa->id")->update(["cena" => $masa->cena]);
-                $suma += $cenaOne;
-                $suma += $cenaTwo;
-                $suma += $cenaThree;
-                $suma += $cenaaFour;
-                $suma += $cenaFive;
-            } elseif ($masa->masa > 10 && $masa->masa < 15) {
-                $cenaOne = ($masa->masa <= 11 && $masa->masa > 10) ? $masa->cena = $array_json[$x . '94'] : 0;
-                $cenaTwo = ($masa->masa <= 12 && $masa->masa > 11) ? $masa->cena = $array_json[$x . '95'] : 0;
-                $cenaThree = ($masa->masa <= 13 && $masa->masa > 12) ? $masa->cena = $array_json[$x . '96'] : 0;
-                $cenaaFour = ($masa->masa <= 14 && $masa->masa > 13) ? $masa->cena = $array_json[$x . '97'] : 0;
-                $cenaFive = ($masa->masa <= 15 && $masa->masa > 14) ? $masa->cena = $array_json[$x . '98'] : 0;
-                Ems::where("id", "=", "$masa->id")->update(["cena" => $masa->cena]);
-                $suma += $cenaOne;
-                $suma += $cenaTwo;
-                $suma += $cenaThree;
-                $suma += $cenaaFour;
-                $suma += $cenaFive;
-            } else {
-                $cenaOne = ($masa->masa <= 16 && $masa->masa > 15) ? $masa->cena = $array_json[$x . '99'] : 0;
-                $cenaTwo = ($masa->masa <= 17 && $masa->masa > 16) ? $masa->cena = $array_json[$x . '100'] : 0;
-                $cenaThree = ($masa->masa <= 18 && $masa->masa > 17) ? $masa->cena = $array_json[$x . '101'] : 0;
-                $cenaaFour = ($masa->masa <= 19 && $masa->masa > 18) ? $masa->cena = $array_json[$x . '102'] : 0;
-                $cenaFive = ($masa->masa <= 20 && $masa->masa > 19) ? $masa->cena = $array_json[$x . '103'] : 0;
-                Ems::where("id", "=", "$masa->id")->update(["cena" => $masa->cena]);
-                $suma += $cenaOne;
-                $suma += $cenaTwo;
-                $suma += $cenaThree;
-                $suma += $cenaaFour;
-                $suma += $cenaFive;
-            }
-        }
-        return $suma;
-    }
-
-    public static function setPriceWithWeightZoneD() {
-
-        $waga = Ems::where('strefa', '=', 'D')->get();
-        $suma = 0;
-        $array_json = Ems::getPricesFromJson();
-        $x = '566,';
-        foreach ($waga as $masa) {
-
-            if ($masa->masa <= 5) {
-
-                $cenaOne = ($masa->masa <= 0.5) ? $masa->cena = $array_json[$x . '568'] : 0;
-                $cenaTwo = ($masa->masa <= 1 && $masa->masa >= 0.5) ? $masa->cena = $array_json[$x . '84'] : 0;
-                $cenaThree = ($masa->masa <= 2 && $masa->masa > 1) ? $masa->cena = $array_json[$x . '85'] : 0;
-                $cenaaFour = ($masa->masa <= 3 && $masa->masa > 2) ? $masa->cena = $array_json[$x . '86'] : 0;
-                $cenaFive = ($masa->masa <= 4 && $masa->masa > 3) ? $masa->cena = $array_json[$x . '87'] : 0;
-                $cenaSix = ($masa->masa <= 5 && $masa->masa > 4) ? $masa->cena = $array_json[$x . '88'] : 0;
-                Ems::where("id", "=", "$masa->id")->update(["cena" => $masa->cena]);
-                $suma += $cenaOne;
-                $suma += $cenaTwo;
-                $suma += $cenaThree;
-                $suma += $cenaaFour;
-                $suma += $cenaFive;
-                $suma += $cenaSix;
-            }
-
-            if ($masa->masa > 5 && $masa->masa < 10) {
-                $cenaOne = ($masa->masa <= 6 && $masa->masa > 5) ? $masa->cena = $array_json[$x . '89'] : 0;
-                $cenaTwo = ($masa->masa <= 7 && $masa->masa > 6) ? $masa->cena = $array_json[$x . '90'] : 0;
-                $cenaThree = ($masa->masa <= 8 && $masa->masa > 7) ? $masa->cena = $array_json[$x . '91'] : 0;
-                $cenaaFour = ($masa->masa <= 9 && $masa->masa > 8) ? $masa->cena = $array_json[$x . '92'] : 0;
-                $cenaFive = ($masa->masa <= 10 && $masa->masa > 9) ? $masa->cena = $array_json[$x . '93'] : 0;
-                Ems::where("id", "=", "$masa->id")->update(["cena" => $masa->cena]);
-                $suma += $cenaOne;
-                $suma += $cenaTwo;
-                $suma += $cenaThree;
-                $suma += $cenaaFour;
-                $suma += $cenaFive;
-            } elseif ($masa->masa > 10 && $masa->masa < 15) {
-                $cenaOne = ($masa->masa <= 11 && $masa->masa > 10) ? $masa->cena = $array_json[$x . '93'] : 0;
-                $cenaTwo = ($masa->masa <= 12 && $masa->masa > 11) ? $masa->cena = $array_json[$x . '94'] : 0;
-                $cenaThree = ($masa->masa <= 13 && $masa->masa > 12) ? $masa->cena = $array_json[$x . '95'] : 0;
-                $cenaaFour = ($masa->masa <= 14 && $masa->masa > 13) ? $masa->cena = $array_json[$x . '96'] : 0;
-                $cenaFive = ($masa->masa <= 15 && $masa->masa > 14) ? $masa->cena = $array_json[$x . '97'] : 0;
-                Ems::where("id", "=", "$masa->id")->update(["cena" => $masa->cena]);
-                $suma += $cenaOne;
-                $suma += $cenaTwo;
-                $suma += $cenaThree;
-                $suma += $cenaaFour;
-                $suma += $cenaFive;
-            }if ($masa->masa >= 15) {
-                $cenaOne = ($masa->masa <= 16 && $masa->masa > 15) ? $masa->cena = $array_json[$x . '98'] : 0;
-                $cenaTwo = ($masa->masa <= 17 && $masa->masa > 16) ? $masa->cena = $array_json[$x . '99'] : 0;
-                $cenaThree = ($masa->masa <= 18 && $masa->masa > 17) ? $masa->cena = $array_json[$x . '100'] : 0;
-                $cenaaFour = ($masa->masa <= 19 && $masa->masa > 18) ? $masa->cena = $array_json[$x . '101'] : 0;
-                $cenaFive = ($masa->masa <= 20 && $masa->masa > 19) ? $masa->cena = $array_json[$x . '102'] : 0;
-                Ems::where("id", "=", "$masa->id")->update(["cena" => $masa->cena]);
-
-                $suma += $cenaOne;
-                $suma += $cenaTwo;
-                $suma += $cenaThree;
-                $suma += $cenaaFour;
-                $suma += $cenaFive;
-            }
-        }
-        return $suma;
-    }
 
     /**
      * Metoda sprawdza czy przy jakimś z rekordów jest pozycja ubezpieczenie i na podstawie danych ze strony dolicza 
      * do $price_insurance należność za takowe ubezpieczenie. Zwraca wartość która została zliczona. 
+     * 
+     * Ta metoda będzie musiała zostać updatowana
      * @return real
      */
     public static function setInsuranceAndCount() {
@@ -556,19 +263,6 @@ class Ems extends Model {
      */
 
     public static function addAllPricesEms() {
-
-//        $toSearch = Ems::all();
-//            $rating = $toSearch->groupBy(function ($date, $key) {
-//             return $date['date'];
-//        });    
-//            $rating = json_decode(json_encode((array) $rating), true);
-//             foreach ($rating as $row){
-//                 dd($row);
-//                 foreach ($row as $row_next){
-//                     echo dd($row_next[2]);
-//                 }
-//             }
-
         $insuare = 0;
         $count_all_prices = 0;
         $count_all_prices += Ems::setPriceWithWeightZoneA();
@@ -581,34 +275,10 @@ class Ems extends Model {
         return $prices;
     }
 
-    public static function addPricesWithWeight($objectToSetId) {
-
-        foreach ($objectToSetId as $row) {
-            foreach ($row->masa as $masa) {
-                if ($masa === $tabelMasa) {
-                    Ems::update(['masaId' => $masa['id']]);
-                }
-            }
-        }
-    }
-
-    public static function addIdWithStrefa($objectToSetId) {
-        foreach ($objectToSetId as $row) {
-            foreach ($row->kraj as $kraj) {
-                if ($kraj == $wykazStref) {
-                    Ems::update(['strefaId' => $wykazStref["$kraj"]]);
-                }
-            }
-        }
-    }
-
-    public static function setPrice($objectToSetId) {
-        $prices = [];
-        foreach ($objectToSetId as $ids) {
-            $id = $ids->masaId . $ids->strefaId;
-        }
-    }
-
+    /**
+     * Funkcja odpowiedzialna za nadanie id-ika (potrzebnego do wyliczenia ceny) według tabeli wagowej.
+     * Funkcja query buildera jest sprawdzane czy masa znajduje się pomiędzy wskazanymi wartościami. Jeżeli tak to idik jest aktualizowany.
+     */
     public function setWeight() {
                         DB::table('ems')->whereBetween('masa', [0  ,0.49]) ->update(['idMasa' => '568']);
                         DB::table('ems')->whereBetween('masa', [0.5, 0.99])->update(['idMasa' => '84']);
@@ -632,7 +302,10 @@ class Ems extends Model {
                         DB::table('ems')->whereBetween('masa', [18,18.99]) ->update(['idMasa' => '102']);
                         DB::table('ems')->whereBetween('masa', [19,20])    ->update(['idMasa' => '103']);
     }
-
+    /**
+     * Metoda odpowiedzialna za nastawienie odpowiedniego idika według strefy w jakiej jest poszczególny kraj.
+     * Używając Query Buildera jeżeli w tablei znajdzie się kraj ze $strefy[xyz] to jest aktualizowana strefa o numer idika.
+     */
     public function setIdFromStrefa() {
                 $strefy = $this->strefySmall;
                  DB::table('ems')->whereIn('kraj', $strefy[563])->update(['strefa'=>'563']);
@@ -641,6 +314,13 @@ class Ems extends Model {
                  DB::table('ems')->whereIn('kraj', $strefy[566])->update(['strefa'=>'566']);
                  DB::table('ems')->whereIn('kraj', $strefy[567])->update(['strefa'=>'567']);
         }
+        
+        /**
+         * Metoda wskazuje według idków scalonych w 324 linijce odpowiednią cenę za usługę Poczty Polskiej.
+         * Najpierw pobiera ceny według oraz pozycje z tabeli ems. Następnie parametry są przekazywane do pętli foreach. W międzyczasie 
+         * scalony zostaje id-ik z dwóch kolumn odpowiedzialnych za waga i strefe. W ostatniej linijce kodu jeżeli id się zgadza cena jest aktualizowana
+         * po $keyu z tablicy z cenami.
+         */
     public function setPriceFromId(){
         $arrayOfPrices = Ems::getPricesFromJson();
        $id = DB::table('ems')->select('strefa' ,'idMasa' ,'id','unique_id')->get();
